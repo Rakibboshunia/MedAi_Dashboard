@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import DataTable from "../components/TableComp";
 import StatsCom from "../components/StatsCom";
 import SearchCom from "../components/SearchCom";
+import Pagination from "../components/Pagination";
 import toast from "react-hot-toast";
 
 import { getUsers } from "../api/usersApi";
@@ -11,8 +12,10 @@ const Users = () => {
   const [data, setData] = useState([]);
   const [search, setSearch] = useState("");
   const [ageFilter, setAgeFilter] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
 
   const hasFetched = useRef(false);
+  const itemsPerPage = 5; // প্রতি পেজে কয়টা user দেখাবে
 
   /* ================= FETCH USERS ================= */
 
@@ -30,16 +33,15 @@ const Users = () => {
       const result = await getUsers();
 
       const formatted =
-  result?.users?.map((user) => ({
-    name: user.full_name || "N/A",
-    avatar: user.image
-      ? `${api.defaults.baseURL}${user.image}`
-      : null,
-    email: user.email || "N/A",
-    address: user.address || "Not provided",
-    age: user.age ?? "N/A",
-  })) || [];
-
+        result?.users?.map((user) => ({
+          name: user.full_name || "N/A",
+          avatar: user.image
+            ? `${api.defaults.baseURL}${user.image}`
+            : null,
+          email: user.email || "N/A",
+          address: user.address || "Not provided",
+          age: user.age ?? "N/A",
+        })) || [];
 
       setData(formatted);
 
@@ -50,7 +52,7 @@ const Users = () => {
     }
   };
 
-  /* ================= SEARCH + FILTER ================= */
+  /* ================= FILTER ================= */
 
   const filteredData = data
     .filter((user) =>
@@ -58,11 +60,32 @@ const Users = () => {
     )
     .filter((user) => {
       if (!ageFilter) return true;
-      if (ageFilter === "below30") return user.age !== "N/A" && user.age < 30;
-      if (ageFilter === "30plus") return user.age !== "N/A" && user.age >= 30;
+      if (ageFilter === "below30")
+        return user.age !== "N/A" && user.age < 30;
+      if (ageFilter === "30plus")
+        return user.age !== "N/A" && user.age >= 30;
       if (ageFilter === "NA") return user.age === "N/A";
       return true;
     });
+
+  /* ================= PAGINATION ================= */
+
+  const totalPages = Math.ceil(
+    filteredData.length / itemsPerPage
+  );
+
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+
+  const paginatedData = filteredData.slice(
+    startIndex,
+    endIndex
+  );
+
+  // search বা filter change হলে page reset হবে
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [search, ageFilter]);
 
   /* ================= TABLE COLUMNS ================= */
 
@@ -85,7 +108,9 @@ const Users = () => {
               className="w-full h-full object-cover"
             />
           </div>
-          <span className="truncate text-sm sm:text-base">{name}</span>
+          <span className="truncate text-sm sm:text-base">
+            {name}
+          </span>
         </div>
       ),
     },
@@ -97,14 +122,12 @@ const Users = () => {
   return (
     <div className="px-3 sm:px-4 md:px-6 py-4 space-y-6 md:space-y-8">
 
-      {/* ================= STATS ================= */}
       <StatsCom
         title="Total Users"
         value={filteredData.length}
         icon="material-symbols:group-outline"
       />
 
-      {/* ================= SEARCH + FILTER ================= */}
       <SearchCom
         search={search}
         setSearch={setSearch}
@@ -119,10 +142,15 @@ const Users = () => {
         filterPlaceholder="Age"
       />
 
-      {/* ================= TABLE ================= */}
       <div className="overflow-x-auto rounded-xl">
-        <DataTable columns={columns} data={filteredData} />
+        <DataTable columns={columns} data={paginatedData} />
       </div>
+
+      <Pagination
+        totalPages={totalPages}
+        currentPage={currentPage}
+        onPageChange={(page) => setCurrentPage(page)}
+      />
 
     </div>
   );

@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import DataTable from "../components/TableComp";
 import StatsCom from "../components/StatsCom";
 import SearchCom from "../components/SearchCom";
+import Pagination from "../components/Pagination";
 import toast from "react-hot-toast";
 
 import { getDoctors } from "../api/doctorsApi";
@@ -10,9 +11,11 @@ const Doctors = () => {
   const [search, setSearch] = useState("");
   const [gender, setGender] = useState("");
   const [data, setData] = useState([]);
-  const [open, setOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
 
   const hasFetched = useRef(false);
+
+  const itemsPerPage = 5; 
 
   useEffect(() => {
     if (!hasFetched.current) {
@@ -45,13 +48,25 @@ const Doctors = () => {
     }
   };
 
+  // 🔍 Search + Filter
   const filteredData = data
     .filter((doctor) =>
       doctor?.name?.toLowerCase().includes(search.toLowerCase())
     )
-    .filter((doctor) =>
-      gender ? doctor.gender === gender : true
-    );
+    .filter((doctor) => (gender ? doctor.gender === gender : true));
+
+  // 📄 Pagination Logic
+  const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+
+  const paginatedData = filteredData.slice(startIndex, endIndex);
+
+  // যদি filter/search change হয় → page 1 এ চলে যাবে
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [search, gender]);
 
   const columns = [
     { header: "Doctor name", key: "name" },
@@ -83,7 +98,15 @@ const Doctors = () => {
         filterPlaceholder="Gender"
       />
 
-      <DataTable columns={columns} data={filteredData} />
+      {/* Table */}
+      <DataTable columns={columns} data={paginatedData} />
+
+      {/* Pagination */}
+      <Pagination
+        totalPages={totalPages}
+        currentPage={currentPage}
+        onPageChange={(page) => setCurrentPage(page)}
+      />
 
     </div>
   );

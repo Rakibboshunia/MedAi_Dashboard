@@ -53,7 +53,6 @@ export default function Login() {
           </p>
 
           <form onSubmit={handleLogin} className="space-y-4">
-            {/* EMAIL */}
             <div>
               <label className="text-sm text-gray-600 block mb-1">
                 Email address
@@ -67,7 +66,6 @@ export default function Login() {
               />
             </div>
 
-            {/* PASSWORD */}
             <div>
               <label className="text-sm text-gray-600 block mb-1">
                 Password
@@ -90,7 +88,6 @@ export default function Login() {
               </div>
             </div>
 
-            {/* FORGOT PASSWORD */}
             <div className="flex items-center justify-end text-sm">
               <Link
                 to="/forgot-password"
@@ -100,7 +97,6 @@ export default function Login() {
               </Link>
             </div>
 
-            {/* BUTTON */}
             <button
               type="submit"
               disabled={loading}

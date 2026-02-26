@@ -57,7 +57,6 @@ export default function Home() {
           getPharmacies(),
         ]);
 
-      // ================= STATS =================
       setStats([
         {
           title: "Total Users",
@@ -79,7 +78,6 @@ export default function Home() {
         },
       ]);
 
-      // ================= USER GROWTH =================
       const growthArray = Object.entries(
         dashboardData.monthly_user_growth || {}
       ).map(([month, value]) => ({
@@ -89,7 +87,6 @@ export default function Home() {
 
       setUserGrowthData(growthArray);
 
-      // ================= MEDICINE REQUEST =================
       const medicineArray = Object.entries(
         dashboardData.monthly_medicine_requests || {}
       ).map(([month, value]) => ({
@@ -113,7 +110,6 @@ export default function Home() {
   return (
     <div className="space-y-10 md:space-y-10 px-3 sm:px-4 md:px-0">
 
-      {/* ================= STATS ================= */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 bg-primary-light p-4 sm:p-6 rounded-2xl border border-primary/30">
         {stats.map((item) => (
           <div
@@ -141,10 +137,8 @@ export default function Home() {
         ))}
       </div>
 
-      {/* ================= CHART SECTION ================= */}
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 md:gap-8">
 
-        {/* USER GROWTH */}
         <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-sm border border-primary/30">
           <h3 className="text-primary font-semibold mb-4 text-base sm:text-lg ">
             User Growth
@@ -169,7 +163,6 @@ export default function Home() {
           </div>
         </div>
 
-        {/* MONTHLY MEDICINE */}
         <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-sm border border-primary/30">
           <h3 className="text-primary font-semibold mb-4 text-base sm:text-lg">
             Monthly Added Medication

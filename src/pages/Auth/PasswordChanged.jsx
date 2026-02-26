@@ -88,7 +88,6 @@ export default function ResetPassword() {
           </p>
 
           <form onSubmit={handleSubmit} className="space-y-6">
-            {/* EMAIL */}
             <div>
               <label className="text-sm text-gray-600 block mb-1">
                 Email address
@@ -102,7 +101,6 @@ export default function ResetPassword() {
               />
             </div>
 
-            {/* New Password */}
             <div>
               <label className="text-sm text-gray-600 block mb-1">
                 New Password
@@ -126,7 +124,6 @@ export default function ResetPassword() {
               </div>
             </div>
 
-            {/* Confirm Password */}
             <div>
               <label className="text-sm text-gray-600 block mb-1">
                 Confirm Password
@@ -179,7 +176,6 @@ export default function ResetPassword() {
         </div>
       </div>
 
-      {/* SUCCESS MODAL */}
       {showSuccessModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm px-4">
           <div className="w-full max-w-lg bg-white rounded-3xl shadow-2xl p-10 flex flex-col items-center">

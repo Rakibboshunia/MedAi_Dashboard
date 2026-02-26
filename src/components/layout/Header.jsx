@@ -20,6 +20,7 @@ export default function Header({ onMenuClick }) {
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const [openSection, setOpenSection] = useState("info");
 
   const dropdownRef = useRef(null);
   const fileInputRef = useRef(null);
@@ -222,7 +223,7 @@ export default function Header({ onMenuClick }) {
           <div className="relative" ref={dropdownRef}>
             <div
               onClick={() => setShowProfileModal((prev) => !prev)}
-              className="flex items-center gap-3 cursor-pointer group"
+              className="flex items-center gap-3 cursor-pointer"
             >
               <div className="h-16 w-16 rounded-full overflow-hidden border-3 border-primary shadow-md">
                 <img
@@ -235,19 +236,13 @@ export default function Header({ onMenuClick }) {
                 />
               </div>
 
-              <div className="flex items-center gap-1">
-
-                <Icon
-                  icon="material-symbols:keyboard-arrow-down-rounded"
-                  width="32"
-                  className={`transition-transform duration-300 ${
-                    showProfileModal
-                      ? "rotate-180 text-primary"
-                      : "text-primary"
-                  }`}
-                />
-                
-              </div>
+              <Icon
+                icon="material-symbols:keyboard-arrow-down-rounded"
+                width="32"
+                className={`transition-transform duration-300 ${
+                  showProfileModal ? "rotate-180" : ""
+                }`}
+              />
             </div>
 
             {showProfileModal && (
@@ -291,79 +286,120 @@ export default function Header({ onMenuClick }) {
                   </div>
                 </div>
 
-                <div className="pt-20 p-8 bg-gray-50 space-y-4">
-                  <div className="text-center">
-                    <h3 className="text-xl font-black text-primary">
-                      Admin
-                    </h3>
-                    <span className="text-sm font-bold tracking-widest text-primary uppercase">
-                      Admin Profile Info
-                    </span>
+                <div className="pt-20 p-8 bg-gray-50 space-y-6">
+
+                  {/* BASIC INFO */}
+                  <div className="bg-white rounded-2xl shadow border border-gray-300 overflow-hidden">
+                    <button
+                      onClick={() =>
+                        setOpenSection(openSection === "info" ? "" : "info")
+                      }
+                      className="w-full flex justify-between items-center px-6 py-4 font-bold text-primary "
+                    >
+                      Basic Information
+                      <Icon
+                        icon="material-symbols:expand-more-rounded"
+                        width="26"
+                        className={`transition-transform ${
+                          openSection === "info" ? "rotate-180" : ""
+                        }`}
+                      />
+                    </button>
+
+                    {openSection === "info" && (
+                      <div className="px-6 pb-6 space-y-4">
+                        <FormInput
+                          label="Full Name"
+                          value={profileData.full_name}
+                          onChange={(e) =>
+                            setProfileData({
+                              ...profileData,
+                              full_name: e.target.value,
+                            })
+                          }
+                        />
+
+                        <FormInput
+                          label="Email Address"
+                          type="email"
+                          value={profileData.email}
+                          onChange={(e) =>
+                            setProfileData({
+                              ...profileData,
+                              email: e.target.value,
+                            })
+                          }
+                        />
+                      </div>
+                    )}
                   </div>
 
-                  <FormInput
-                    label="Full Name"
-                    value={profileData.full_name}
-                    onChange={(e) =>
-                      setProfileData({
-                        ...profileData,
-                        full_name: e.target.value,
-                      })
-                    }
-                  />
+                  {/* PASSWORD */}
+                  <div className="bg-white rounded-2xl shadow border border-gray-300 overflow-hidden">
+                    <button
+                      onClick={() =>
+                        setOpenSection(
+                          openSection === "password" ? "" : "password"
+                        )
+                      }
+                      className="w-full flex justify-between items-center px-6 py-4 font-bold text-primary"
+                    >
+                      Change Password
+                      <Icon
+                        icon="material-symbols:expand-more-rounded"
+                        width="26"
+                        className={`transition-transform ${
+                          openSection === "password" ? "rotate-180" : ""
+                        }`}
+                      />
+                    </button>
 
-                  <FormInput
-                    label="Email Address"
-                    type="email"
-                    value={profileData.email}
-                    onChange={(e) =>
-                      setProfileData({
-                        ...profileData,
-                        email: e.target.value,
-                      })
-                    }
-                  />
+                    {openSection === "password" && (
+                      <div className="px-6 pb-6 space-y-4">
+                        <PasswordInput
+                          label="Current Password"
+                          value={profileData.old_password}
+                          onChange={(e) =>
+                            setProfileData({
+                              ...profileData,
+                              old_password: e.target.value,
+                            })
+                          }
+                        />
 
-                  <PasswordInput
-                    label="Current Password"
-                    value={profileData.old_password}
-                    onChange={(e) =>
-                      setProfileData({
-                        ...profileData,
-                        old_password: e.target.value,
-                      })
-                    }
-                  />
+                        <PasswordInput
+                          label="New Password"
+                          value={profileData.new_password}
+                          onChange={(e) =>
+                            setProfileData({
+                              ...profileData,
+                              new_password: e.target.value,
+                            })
+                          }
+                          showStrength
+                        />
 
-                  <PasswordInput
-                    label="New Password"
-                    value={profileData.new_password}
-                    onChange={(e) =>
-                      setProfileData({
-                        ...profileData,
-                        new_password: e.target.value,
-                      })
-                    }
-                    showStrength
-                  />
-
-                  <PasswordInput
-                    label="Confirm Password"
-                    value={profileData.confirm_password}
-                    onChange={(e) =>
-                      setProfileData({
-                        ...profileData,
-                        confirm_password: e.target.value,
-                      })
-                    }
-                  />
+                        <PasswordInput
+                          label="Confirm Password"
+                          value={profileData.confirm_password}
+                          onChange={(e) =>
+                            setProfileData({
+                              ...profileData,
+                              confirm_password: e.target.value,
+                            })
+                          }
+                        />
+                      </div>
+                    )}
+                  </div>
 
                   <button
                     onClick={() => setShowConfirmModal(true)}
-                    className="w-full bg-primary/40 hover:bg-primary text-white py-3 rounded-2xl font-bold shadow-lg transition-all cursor-pointer"
+                    className="w-full bg-primary hover:bg-primary/90 text-white py-3 rounded-2xl font-bold shadow-lg transition-all cursor-pointer"
                   >
                     Update Profile
                   </button>
+
                 </div>
               </div>
             )}

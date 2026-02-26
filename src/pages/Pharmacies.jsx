@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import DataTable from "../components/TableComp";
 import StatsCom from "../components/StatsCom";
 import SearchCom from "../components/SearchCom";
+import Pagination from "../components/Pagination";
 import toast from "react-hot-toast";
 
 import { getPharmacies } from "../api/pharmaciesApi";
@@ -9,12 +10,13 @@ import { getPharmacies } from "../api/pharmaciesApi";
 const Pharmacies = () => {
   const [search, setSearch] = useState("");
   const [websiteFilter, setWebsiteFilter] = useState("");
-  const [open, setOpen] = useState(false);
   const [data, setData] = useState([]);
   const [total, setTotal] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
 
-  const addBtnRef = useRef(null);
   const hasFetched = useRef(false);
+
+  const itemsPerPage = 5; // প্রতি পেজে কয়টা দেখাবে
 
   useEffect(() => {
     if (!hasFetched.current) {
@@ -56,6 +58,7 @@ const Pharmacies = () => {
     }
   };
 
+  // 🔍 Search + Filter
   const filteredData = data
     .filter((pharmacy) =>
       pharmacy?.name?.toLowerCase().includes(search.toLowerCase())
@@ -67,11 +70,29 @@ const Pharmacies = () => {
       return true;
     });
 
+  // 📄 Pagination Logic
+  const totalPages = Math.ceil(
+    filteredData.length / itemsPerPage
+  );
+
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+
+  const paginatedData = filteredData.slice(
+    startIndex,
+    endIndex
+  );
+
+  // search বা filter change হলে page reset হবে
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [search, websiteFilter]);
+
   const columns = [
     { header: "Pharmacy name", key: "name" },
     {
       header: "Website",
-      key: "Fillter",
+      key: "website",
       render: (url) =>
         url ? (
           <a
@@ -111,7 +132,13 @@ const Pharmacies = () => {
         filterPlaceholder="Website"
       />
 
-      <DataTable columns={columns} data={filteredData} />
+      <DataTable columns={columns} data={paginatedData} />
+
+      <Pagination
+        totalPages={totalPages}
+        currentPage={currentPage}
+        onPageChange={(page) => setCurrentPage(page)}
+      />
 
     </div>
   );

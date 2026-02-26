@@ -41,7 +41,6 @@ export default function VerifyOTP() {
     }
   };
 
-  /*  VERIFY OTP  */
 
   const handleVerify = async (e) => {
     e.preventDefault();
@@ -72,8 +71,6 @@ export default function VerifyOTP() {
       setLoading(false);
     }
   };
-
-  /*  RESEND OTP  */
 
   const handleResend = async () => {
     if (!canResend) return;
