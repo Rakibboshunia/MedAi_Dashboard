@@ -1,5 +1,7 @@
 import { createBrowserRouter } from "react-router-dom";
 import DashboardLayout from "../layout/DashboardLayout";
+import PrivateRoute from "../components/PrivateRoute";
+
 import Home from "../pages/Home";
 
 import Login from "../pages/Auth/Login";
@@ -15,7 +17,11 @@ import Notifications from "../pages/Notifications";
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <DashboardLayout />,
+    element: (
+      <PrivateRoute>
+        <DashboardLayout />
+      </PrivateRoute>
+    ),
     children: [
       {
         index: true,
