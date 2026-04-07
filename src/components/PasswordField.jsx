@@ -6,6 +6,7 @@ const PasswordField = ({
   setShowPassword,
   showStrength = false,
 }) => (
+  
   <div className="space-y-1.5">
     <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest px-1">
       {label}
