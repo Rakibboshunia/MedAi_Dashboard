@@ -33,7 +33,9 @@ export default function Sidebar({ isOpen, onClose }) {
   ];
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
+    localStorage.removeItem("userId");
     localStorage.removeItem("user");
 
     if (window.innerWidth < 768) {
