@@ -1,4 +1,3 @@
-"use client";
 import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
 
 export default function Pagination({

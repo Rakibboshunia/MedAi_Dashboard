@@ -31,9 +31,17 @@ export default function Login() {
     try {
       const data = await loginUser({ email, password });
 
-      localStorage.setItem("accessToken", data.access);
-      localStorage.setItem("refreshToken", data.refresh);
-      localStorage.setItem("userId", data.id);
+      const accessToken = data?.access || data?.token || data?.access_token || data?.data?.access || data?.data?.token || data;
+      const refreshToken = data?.refresh || data?.refresh_token || data?.data?.refresh || null;
+      const userId = data?.id || data?.data?.id || null;
+
+      if (!accessToken || typeof accessToken === "object") {
+        throw new Error("Invalid token format received from server ❌");
+      }
+
+      localStorage.setItem("accessToken", accessToken);
+      localStorage.setItem("refreshToken", refreshToken);
+      localStorage.setItem("userId", userId);
 
       // 🔥 IMPORTANT FIX
       setUser({ token: data.access });
