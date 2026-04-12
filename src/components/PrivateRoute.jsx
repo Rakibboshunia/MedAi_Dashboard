@@ -1,9 +1,13 @@
 import { Navigate } from "react-router-dom";
+import { useContext } from "react";
+import { AuthContext } from "../provider/AuthContext";
 
 const PrivateRoute = ({ children }) => {
-  const token = localStorage.getItem("accessToken"); 
+  const { user, loading } = useContext(AuthContext);
 
-  if (!token) {
+  if (loading) return null;
+
+  if (!user) {
     return <Navigate to="/login" replace />;
   }
 

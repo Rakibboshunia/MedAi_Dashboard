@@ -96,7 +96,7 @@ export default function Home() {
 
       setMedicineData(medicineArray);
 
-      toast.success("Dashboard loaded successfully ✅", {
+      toast.success("Dashboard loaded successfully 🎉", {
         id: toastId,
       });
     } catch (error) {

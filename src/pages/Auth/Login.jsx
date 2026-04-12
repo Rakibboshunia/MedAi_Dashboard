@@ -1,14 +1,25 @@
-import { useState } from "react";
+import { useState, useEffect, useContext } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
 import toast from "react-hot-toast";
 
 import { loginUser } from "../../api/authApi";
+import { AuthContext } from "../../provider/AuthContext";
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+
   const navigate = useNavigate();
+  const { setUser } = useContext(AuthContext);
+
+  // ✅ Already logged → redirect
+  useEffect(() => {
+    const token = localStorage.getItem("accessToken");
+    if (token) {
+      navigate("/");
+    }
+  }, [navigate]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -24,8 +35,16 @@ export default function Login() {
       localStorage.setItem("refreshToken", data.refresh);
       localStorage.setItem("userId", data.id);
 
+      // 🔥 IMPORTANT FIX
+      setUser({ token: data.access });
+
       toast.success("Login successful 🎉");
-      navigate("/");
+
+      // 🔥 Delay fix (live issue solve)
+      setTimeout(() => {
+        navigate("/");
+      }, 120);
+
     } catch (error) {
       toast.error(
         error?.response?.data?.message || "Invalid credentials ❌"
